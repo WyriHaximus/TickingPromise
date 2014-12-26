@@ -7,34 +7,26 @@ use React\Promise\Deferred;
 
 /**
  * @param LoopInterface $loop
- * @return callable
+ * @return \React\Promise\Promise
  */
 function futurePromise(LoopInterface $loop)
 {
-    return function ($result) use ($loop) {
-
-        $deferred = new Deferred();
-
-        $loop->futureTick(function () use ($deferred, $result) {
-            $deferred->resolve($result);
-        });
-        return $deferred->promise();
-    };
+    $deferred = new Deferred();
+    $loop->futureTick(function () use ($deferred) {
+        $deferred->resolve();
+    });
+    return $deferred->promise();
 }
 
 /**
  * @param LoopInterface $loop
- * @return callable
+ * @return \React\Promise\Promise
  */
 function nextPromise(LoopInterface $loop)
 {
-    return function ($result) use ($loop) {
-
-        $deferred = new Deferred();
-
-        $loop->nextTick(function () use ($deferred, $result) {
-            $deferred->resolve($result);
-        });
-        return $deferred->promise();
-    };
+    $deferred = new Deferred();
+    $loop->nextTick(function () use ($deferred) {
+        $deferred->resolve();
+    });
+    return $deferred->promise();
 }

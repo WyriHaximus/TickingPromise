@@ -13,6 +13,10 @@
         "react/event-loop": "0.4.*",
         "react/promise": "~2.1"
     },
+    "require-dev": {
+        "vectorface/dunit": "~1.4",
+        "phpunit/phpunit": "~4.4"
+    },
     "autoload": {
         "files": ["src/functions.php"]
     }
