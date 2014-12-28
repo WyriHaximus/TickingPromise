@@ -31,6 +31,8 @@ $loop = \React\EventLoop\Factory::create();
 $loop->run();
 ```
 
+For more examples check the [examples directory](https://github.com/WyriHaximus/TickingPromise/tree/master/examples).
+
 ## License ##
 
 Copyright 2014 [Cees-Jan Kiewiet](http://wyrihaximus.net/)
