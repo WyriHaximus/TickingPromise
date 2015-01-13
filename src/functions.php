@@ -3,6 +3,7 @@
 namespace WyriHaximus\React;
 
 use React\EventLoop\LoopInterface;
+use React\EventLoop\Timer\Timer;
 use React\Promise\Deferred;
 
 /**
@@ -44,6 +45,26 @@ function timedPromise(LoopInterface $loop, $interval)
     $deferred = new Deferred();
     $loop->addTimer($interval, function () use ($deferred) {
         $deferred->resolve();
+    });
+    return $deferred->promise();
+}
+
+/**
+ * @param LoopInterface $loop     ReactPHP event loop.
+ * @param integer       $interval The number of seconds between each interval to run $check.
+ * @param callable      $check    Callable to run at the specified $interval.
+ *
+ * @return \React\Promise\Promise
+ */
+function tickingPromise(LoopInterface $loop, $interval, callable $check)
+{
+    $deferred = new Deferred();
+    $loop->addPeriodicTimer($interval, function (Timer $timer) use ($deferred, $check) {
+        $deferred->progress(time());
+        if ($check()) {
+            $timer->cancel();
+            $deferred->resolve();
+        }
     });
     return $deferred->promise();
 }

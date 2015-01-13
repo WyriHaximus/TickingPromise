@@ -2,6 +2,8 @@
 
 namespace WyriHaximus\React\Tests;
 
+use React\EventLoop\Factory;
+
 class FunctionsTest extends \PHPUnit_Framework_TestCase
 {
     public function testFuturePromise()
@@ -77,5 +79,45 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
             $callbackCalled = true;
         });
         $this->assertTrue($callbackCalled);
+    }
+
+    public function testTickingPromise()
+    {
+        $loop = Factory::create();
+
+        $fired = [
+            false,
+            false,
+            false,
+        ];
+        $i = -1;
+        $callback = function() use (&$i, &$fired) {
+            $i++;
+            $fired[$i] = true;
+            switch($i)
+            {
+                case 0:
+                case 1:
+                    return false;
+                    break;
+                default:
+                case 2:
+                    return true;
+                    break;
+            }
+        };
+
+        $promise = \WyriHaximus\React\tickingPromise($loop, 1, $callback);
+        $loop->run();
+        $this->assertInstanceOf('React\Promise\PromiseInterface', $promise);
+
+        $callbackCalled = false;
+        $promise->then(function () use (&$callbackCalled) {
+            $callbackCalled = true;
+        });
+        $this->assertTrue($callbackCalled);
+        foreach ($fired as $fire) {
+            $this->assertTrue($fire);
+        }
     }
 }
