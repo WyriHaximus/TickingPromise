@@ -102,7 +102,7 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
                     break;
                 default:
                 case 2:
-                    return true;
+                    return 'foo.bar';
                     break;
             }
         };
@@ -112,7 +112,8 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('React\Promise\PromiseInterface', $promise);
 
         $callbackCalled = false;
-        $promise->then(function () use (&$callbackCalled) {
+        $promise->then(function ($result) use (&$callbackCalled) {
+            $this->assertSame('foo.bar', $result);
             $callbackCalled = true;
         });
         $this->assertTrue($callbackCalled);

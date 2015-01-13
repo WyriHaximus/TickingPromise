@@ -61,9 +61,10 @@ function tickingPromise(LoopInterface $loop, $interval, callable $check)
     $deferred = new Deferred();
     $loop->addPeriodicTimer($interval, function (Timer $timer) use ($deferred, $check) {
         $deferred->progress(time());
-        if ($check()) {
+        $result = $check();
+        if ($result !== false) {
             $timer->cancel();
-            $deferred->resolve();
+            $deferred->resolve($result);
         }
     });
     return $deferred->promise();
