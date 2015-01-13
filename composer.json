@@ -10,13 +10,13 @@
         }
     ],
     "require": {
-        "react/event-loop": "0.4.*",
+        "react/event-loop": "^0.4",
         "react/promise": "~2.1"
     },
     "require-dev": {
         "vectorface/dunit": "~1.4",
         "phpunit/phpunit": "~4.4",
-        "satooshi/php-coveralls": "~0.6",
+        "satooshi/php-coveralls": "^0.6",
         "squizlabs/php_codesniffer": "~2.1",
         "object-calisthenics/phpcs-calisthenics-rules": "~1.0"
     },
