@@ -69,3 +69,14 @@ function tickingPromise(LoopInterface $loop, $interval, callable $check)
     });
     return $deferred->promise();
 }
+
+/**
+ * @param LoopInterface $loop  ReactPHP event loop.
+ * @param callable      $check Callable to run at tick.
+ *
+ * @return \React\Promise\Promise
+ */
+function tickingFuturePromise(LoopInterface $loop, callable $check)
+{
+    return TickingFuturePromise::create($loop, $check);
+}

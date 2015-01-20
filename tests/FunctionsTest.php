@@ -121,4 +121,9 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
             $this->assertTrue($fire);
         }
     }
+
+    public function testTickingFuturePromise()
+    {
+        $this->assertInstanceOf('\React\Promise\Promise', \WyriHaximus\React\tickingFuturePromise($this->getMock('React\EventLoop\LoopInterface'), function () {}));
+    }
 }
