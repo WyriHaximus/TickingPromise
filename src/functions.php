@@ -7,6 +7,8 @@ use React\EventLoop\Timer\Timer;
 use React\Promise\Deferred;
 
 /**
+ * Promise that resolves once future tick is called.
+ *
  * @param LoopInterface $loop ReactPHP event loop.
  *
  * @return \React\Promise\Promise
@@ -21,6 +23,8 @@ function futurePromise(LoopInterface $loop)
 }
 
 /**
+ * Promise that resolves once next tick is called.
+ *
  * @param LoopInterface $loop ReactPHP event loop.
  *
  * @return \React\Promise\Promise
@@ -35,6 +39,8 @@ function nextPromise(LoopInterface $loop)
 }
 
 /**
+ * Promise that resolves after $interval has passed.
+ *
  * @param LoopInterface $loop     ReactPHP event loop.
  * @param integer       $interval The number of seconds to wait before execution.
  *
@@ -50,6 +56,8 @@ function timedPromise(LoopInterface $loop, $interval)
 }
 
 /**
+ * Promise that resolves once $check returns something other then false. Runs at periodic $interval.
+ *
  * @param LoopInterface $loop     ReactPHP event loop.
  * @param integer       $interval The number of seconds between each interval to run $check.
  * @param callable      $check    Callable to run at the specified $interval.
@@ -71,6 +79,8 @@ function tickingPromise(LoopInterface $loop, $interval, callable $check)
 }
 
 /**
+ * Promise that resolves once $check returns something other then false. Runs at future tick interval.
+ *
  * @param LoopInterface $loop  ReactPHP event loop.
  * @param callable      $check Callable to run at tick.
  *

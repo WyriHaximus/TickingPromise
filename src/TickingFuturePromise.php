@@ -29,7 +29,7 @@ class TickingFuturePromise
     protected $deferred;
 
     /**
-     * Factory.
+     * Factory used by tickingFuturePromise, see there for more details.
      *
      * @param LoopInterface $loop  ReactPHP event loop.
      * @param callable      $check Callable to run at the future tick.
