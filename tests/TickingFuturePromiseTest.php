@@ -3,8 +3,6 @@
 namespace WyriHaximus\React;
 
 use React\EventLoop\Factory;
-use React\EventLoop\LoopInterface;
-use React\Promise\Deferred;
 
 class TickingFuturePromiseTest extends \PHPUnit_Framework_TestCase
 {
