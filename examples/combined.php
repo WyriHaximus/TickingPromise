@@ -13,13 +13,9 @@ $loop = \React\EventLoop\Factory::create();
         return mt_rand(0, 1000) == 13;
     }),
 ])->then(function ($time) use ($loop) {
-    return \WyriHaximus\React\nextPromise($loop)->then(function () use ($time) {
-        return $time[0];
-    });
+    return \WyriHaximus\React\nextPromise($loop, $time[0]);
 })->then(function ($time) use ($loop) {
-    return \WyriHaximus\React\timedPromise($loop, 3)->then(function () use ($time) {
-        return $time;
-    });
+    return \WyriHaximus\React\timedPromise($loop, 3, $time);
 })->then(function ($time) {
     echo PHP_EOL;
     echo DateTime::createFromFormat('U', $time)->format('r'), PHP_EOL;

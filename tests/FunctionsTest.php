@@ -8,6 +8,8 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
 {
     public function testFuturePromise()
     {
+        $inputData = 'foo.bar';
+
         $loop = $this->getMock('React\EventLoop\StreamSelectLoop', [
             'futureTick',
         ]);
@@ -21,11 +23,12 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
             }))
         ;
 
-        $promise = \WyriHaximus\React\futurePromise($loop);
+        $promise = \WyriHaximus\React\futurePromise($loop, $inputData);
         $this->assertInstanceOf('React\Promise\PromiseInterface', $promise);
 
         $callbackCalled = false;
-        $promise->then(function () use (&$callbackCalled) {
+        $promise->then(function ($data) use (&$callbackCalled, $inputData) {
+            $this->assertSame($inputData, $data);
             $callbackCalled = true;
         });
         $this->assertTrue($callbackCalled);
@@ -33,6 +36,7 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
 
     public function testNextPromise()
     {
+        $inputData = 'foo.bar';
         $loop = $this->getMock('React\EventLoop\StreamSelectLoop', [
             'nextTick',
         ]);
@@ -46,11 +50,12 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
             }))
         ;
 
-        $promise = \WyriHaximus\React\nextPromise($loop);
+        $promise = \WyriHaximus\React\nextPromise($loop, $inputData);
         $this->assertInstanceOf('React\Promise\PromiseInterface', $promise);
 
         $callbackCalled = false;
-        $promise->then(function () use (&$callbackCalled) {
+        $promise->then(function ($data) use (&$callbackCalled, $inputData) {
+            $this->assertSame($inputData, $data);
             $callbackCalled = true;
         });
         $this->assertTrue($callbackCalled);
@@ -58,6 +63,7 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
 
     public function testTimedPromise()
     {
+        $inputData = 'foo.bar';
         $loop = $this->getMock('React\EventLoop\StreamSelectLoop', [
             'addTimer',
         ]);
@@ -71,11 +77,12 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
             }))
         ;
 
-        $promise = \WyriHaximus\React\timedPromise($loop, 123);
+        $promise = \WyriHaximus\React\timedPromise($loop, 123, $inputData);
         $this->assertInstanceOf('React\Promise\PromiseInterface', $promise);
 
         $callbackCalled = false;
-        $promise->then(function () use (&$callbackCalled) {
+        $promise->then(function ($data) use (&$callbackCalled, $inputData) {
+            $this->assertSame($inputData, $data);
             $callbackCalled = true;
         });
         $this->assertTrue($callbackCalled);
@@ -85,13 +92,15 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
     {
         $loop = Factory::create();
 
+        $inputData = 'foo.bar';
         $fired = [
             false,
             false,
             false,
         ];
         $i = -1;
-        $callback = function() use (&$i, &$fired) {
+        $callback = function($data) use (&$i, &$fired, $inputData) {
+            $this->assertSame($inputData, $data);
             $i++;
             $fired[$i] = true;
             switch($i)
@@ -107,7 +116,7 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
             }
         };
 
-        $promise = \WyriHaximus\React\tickingPromise($loop, 1, $callback);
+        $promise = \WyriHaximus\React\tickingPromise($loop, 1, $callback, $inputData);
         $loop->run();
         $this->assertInstanceOf('React\Promise\PromiseInterface', $promise);
 
