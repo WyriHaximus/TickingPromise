@@ -135,4 +135,68 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertInstanceOf('\React\Promise\Promise', \WyriHaximus\React\tickingFuturePromise($this->getMock('React\EventLoop\LoopInterface'), function () {}));
     }
+
+    public function providerFutureFunctionPromise()
+    {
+        return [
+            [
+                'foo.bar',
+                'rab.oof',
+                'strrev',
+            ],
+            [
+                'Qrny jvgu vg!',
+                'Deal with it!',
+                'str_rot13',
+            ],
+            [
+                'Deal with it!',
+                'Deal with it!',
+                function ($str) {
+                    return str_rot13(str_rot13($str));
+                },
+            ],
+            [
+                'abcr',
+                'nope',
+                'str_rot13',
+            ],
+            [
+                'return "nope! NOPE! nope! NOPE! nope! NOPE! nope! NOPE! nope! NOPE!";',
+                'nope! NOPE! nope! NOPE! nope! NOPE! nope! NOPE! nope! NOPE!',
+                function ($str) {
+                    return eval($str);
+                },
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider providerFutureFunctionPromise
+     */
+    public function testFutureFunctionPromise($inputData, $outputDate, $function)
+    {
+        $loop = $this->getMock('React\EventLoop\StreamSelectLoop', [
+            'futureTick',
+        ]);
+
+        $loop
+            ->expects($this->any())
+            ->method('futureTick')
+            ->with($this->isType('callable'))
+            ->will($this->returnCallback(function ($resolveCb) {
+                $resolveCb('foo.bar' . (string)microtime(true));
+            }))
+        ;
+
+        $promise = \WyriHaximus\React\futureFunctionPromise($loop, $inputData, $function);
+        $this->assertInstanceOf('React\Promise\PromiseInterface', $promise);
+
+        $callbackCalled = false;
+        $promise->then(function ($data) use (&$callbackCalled, $outputDate) {
+            $this->assertSame($outputDate, $data);
+            $callbackCalled = true;
+        });
+        $this->assertTrue($callbackCalled);
+    }
 }

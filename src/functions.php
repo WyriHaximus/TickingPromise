@@ -95,3 +95,19 @@ function tickingFuturePromise(LoopInterface $loop, callable $check, $value = nul
 {
     return TickingFuturePromise::create($loop, $check, $value);
 }
+
+/**
+ * Sandwich a $function call within two futureTicks.
+ *
+ * @param LoopInterface $loop     ReactPHP event loop.
+ * @param mixed         $value    Value to pass into $function.
+ * @param callable      $function Function to wrap.
+ *
+ * @return \React\Promise\Promise
+ */
+function futureFunctionPromise(LoopInterface $loop, $value, callable $function)
+{
+    return futurePromise($loop, $value)->then(function ($value) use ($loop, $function) {
+        return futurePromise($loop, $function($value));
+    });
+}
