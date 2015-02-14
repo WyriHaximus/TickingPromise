@@ -27,6 +27,9 @@ $loop = \React\EventLoop\Factory::create();
 \WyriHaximus\React\futurePromise($loop)->then(function () {
     echo 'Done', PHP_EOL;
 });
+\WyriHaximus\React\futurePromise($loop)->then(function ($message) {
+    echo $message, PHP_EOL;
+}, 'Also done');
 
 $loop->run();
 ```
