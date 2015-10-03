@@ -16,7 +16,7 @@
     "require-dev": {
         "vectorface/dunit": "~1.4",
         "phpunit/phpunit": "~4.4",
-        "squizlabs/php_codesniffer": "^1.0"
+        "squizlabs/php_codesniffer": "^1.5.6"
     },
     "autoload": {
         "psr-4": {
