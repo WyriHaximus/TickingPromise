@@ -8,7 +8,6 @@ class TickingFuturePromiseTest extends \PHPUnit_Framework_TestCase
 {
     public function testCreate()
     {
-
         $fired = [
             false,
             false,
