@@ -85,15 +85,16 @@ function tickingPromise(LoopInterface $loop, $interval, callable $check, $value 
 /**
  * Promise that resolves once $check returns something other then false. Runs at future tick interval.
  *
- * @param LoopInterface $loop  ReactPHP event loop.
- * @param callable      $check Callable to run at tick.
- * @param mixed         $value Value to pass into $check on tick.
+ * @param LoopInterface $loop       ReactPHP event loop.
+ * @param callable      $check      Callable to run at tick.
+ * @param mixed         $value      Value to pass into $check on tick.
+ * @param integer       $iterations Number of iterations to call $check in one tick.
  *
  * @return \React\Promise\Promise
  */
-function tickingFuturePromise(LoopInterface $loop, callable $check, $value = null)
+function tickingFuturePromise(LoopInterface $loop, callable $check, $value = null, $iterations = 1)
 {
-    return TickingFuturePromise::create($loop, $check, $value);
+    return TickingFuturePromise::create($loop, $check, $value, $iterations);
 }
 
 /**
