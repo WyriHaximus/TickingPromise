@@ -38,7 +38,7 @@ For more examples check the [examples directory](https://github.com/WyriHaximus/
 
 ## License ##
 
-Copyright 2014 [Cees-Jan Kiewiet](http://wyrihaximus.net/)
+Copyright 2016 [Cees-Jan Kiewiet](http://wyrihaximus.net/)
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation
