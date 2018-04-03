@@ -3,7 +3,6 @@
 namespace WyriHaximus\React;
 
 use React\EventLoop\LoopInterface;
-use React\EventLoop\Timer\TimerInterface;
 use React\Promise\Deferred;
 
 /**
@@ -30,14 +29,12 @@ function futurePromise(LoopInterface $loop, $value = null)
  * @param mixed         $value Value to return on resolve.
  *
  * @return \React\Promise\Promise
+ *
+ * @deprecated use futurePromise instead
  */
 function nextPromise(LoopInterface $loop, $value = null)
 {
-    $deferred = new Deferred();
-    $loop->nextTick(function () use ($deferred, $value) {
-        $deferred->resolve($value);
-    });
-    return $deferred->promise();
+    return futurePromise($loop, $value);
 }
 
 /**
@@ -71,7 +68,7 @@ function timedPromise(LoopInterface $loop, $interval, $value = null)
 function tickingPromise(LoopInterface $loop, $interval, callable $check, $value = null)
 {
     $deferred = new Deferred();
-    $loop->addPeriodicTimer($interval, function (TimerInterface $timer) use ($deferred, $check, $value, $loop) {
+    $loop->addPeriodicTimer($interval, function ($timer) use ($deferred, $check, $value, $loop) {
         $deferred->progress(time());
         $result = $check($value);
         if ($result !== false) {

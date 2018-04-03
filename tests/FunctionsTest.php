@@ -6,13 +6,13 @@ use React\EventLoop\Factory;
 
 class FunctionsTest extends \PHPUnit_Framework_TestCase
 {
+
+
     public function testFuturePromise()
     {
         $inputData = 'foo.bar';
 
-        $loop = $this->getMock('React\EventLoop\StreamSelectLoop', [
-            'futureTick',
-        ]);
+        $loop = $this->mockLoop();
 
         $loop
             ->expects($this->once())
@@ -37,13 +37,11 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
     public function testNextPromise()
     {
         $inputData = 'foo.bar';
-        $loop = $this->getMock('React\EventLoop\StreamSelectLoop', [
-            'nextTick',
-        ]);
+        $loop = $this->mockLoop();
 
         $loop
             ->expects($this->once())
-            ->method('nextTick')
+            ->method('futureTick')
             ->with($this->isType('callable'))
             ->will($this->returnCallback(function ($resolveCb) {
                 $resolveCb('foo.bar' . (string)microtime(true));
@@ -64,9 +62,7 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
     public function testTimedPromise()
     {
         $inputData = 'foo.bar';
-        $loop = $this->getMock('React\EventLoop\StreamSelectLoop', [
-            'addTimer',
-        ]);
+        $loop = $this->mockLoop();
 
         $loop
             ->expects($this->once())
@@ -176,9 +172,7 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
      */
     public function testFutureFunctionPromise($inputData, $outputDate, $function)
     {
-        $loop = $this->getMock('React\EventLoop\StreamSelectLoop', [
-            'futureTick',
-        ]);
+        $loop = $this->mockLoop();
 
         $loop
             ->expects($this->any())
@@ -198,5 +192,23 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
             $callbackCalled = true;
         });
         $this->assertTrue($callbackCalled);
+    }
+
+    protected function mockLoop()
+    {
+        return $this->getMock('React\EventLoop\LoopInterface', [
+            'futureTick',
+            'addReadStream',
+            'addWriteStream',
+            'removeReadStream',
+            'removeWriteStream',
+            'addTimer',
+            'addPeriodicTimer',
+            'cancelTimer',
+            'addSignal',
+            'removeSignal',
+            'run',
+            'stop',
+        ]);
     }
 }
