@@ -198,17 +198,21 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
     {
         return $this->getMock('React\EventLoop\LoopInterface', [
             'futureTick',
+            'nextTick',
             'addReadStream',
             'addWriteStream',
             'removeReadStream',
             'removeWriteStream',
+            'removeStream',
             'addTimer',
             'addPeriodicTimer',
             'cancelTimer',
+            'isTimerActive',
             'addSignal',
             'removeSignal',
             'run',
             'stop',
+            'tick',
         ]);
     }
 }
