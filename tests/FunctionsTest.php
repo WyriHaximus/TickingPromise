@@ -6,10 +6,10 @@ use React\EventLoop\Factory;
 
 class FunctionsTest extends \PHPUnit_Framework_TestCase
 {
-
-
     public function testFuturePromise()
     {
+        gc_collect_cycles();
+
         $inputData = 'foo.bar';
 
         $loop = $this->mockLoop();
@@ -32,10 +32,16 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
             $callbackCalled = true;
         });
         $this->assertTrue($callbackCalled);
+
+        unset($promise);
+
+        $this->assertSame(0, gc_collect_cycles());
     }
 
     public function testNextPromise()
     {
+        gc_collect_cycles();
+
         $inputData = 'foo.bar';
         $loop = $this->mockLoop();
 
@@ -57,10 +63,16 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
             $callbackCalled = true;
         });
         $this->assertTrue($callbackCalled);
+
+        unset($promise);
+
+        $this->assertSame(0, gc_collect_cycles());
     }
 
     public function testTimedPromise()
     {
+        gc_collect_cycles();
+
         $inputData = 'foo.bar';
         $loop = $this->mockLoop();
 
@@ -82,10 +94,16 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
             $callbackCalled = true;
         });
         $this->assertTrue($callbackCalled);
+
+        unset($promise);
+
+        $this->assertSame(0, gc_collect_cycles());
     }
 
     public function testTickingPromise()
     {
+        gc_collect_cycles();
+
         $loop = Factory::create();
 
         $inputData = 'foo.bar';
@@ -125,11 +143,24 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
         foreach ($fired as $fire) {
             $this->assertTrue($fire);
         }
+        unset($promise);
+
+        $this->assertSame(0, gc_collect_cycles());
     }
 
     public function testTickingFuturePromise()
     {
-        $this->assertInstanceOf('\React\Promise\Promise', \WyriHaximus\React\tickingFuturePromise($this->getMock('React\EventLoop\LoopInterface'), function () {}));
+        gc_collect_cycles();
+
+        $loop = Factory::create();
+        $promise = \WyriHaximus\React\tickingFuturePromise($loop, function () {
+            return true;
+        });
+        $this->assertInstanceOf('\React\Promise\Promise', $promise);
+        $loop->run();
+        unset($promise);
+
+        $this->assertSame(0, gc_collect_cycles());
     }
 
     public function providerFutureFunctionPromise()
@@ -172,6 +203,8 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
      */
     public function testFutureFunctionPromise($inputData, $outputDate, $function)
     {
+        gc_collect_cycles();
+
         $loop = $this->mockLoop();
 
         $loop
@@ -192,6 +225,10 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
             $callbackCalled = true;
         });
         $this->assertTrue($callbackCalled);
+
+        unset($promise);
+
+        $this->assertSame(0, gc_collect_cycles());
     }
 
     protected function mockLoop()

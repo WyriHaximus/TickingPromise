@@ -8,6 +8,8 @@ class TickingFuturePromiseTest extends \PHPUnit_Framework_TestCase
 {
     public function testCreate()
     {
+        gc_collect_cycles();
+
         $fired = [
             false,
             false,
@@ -46,6 +48,10 @@ class TickingFuturePromiseTest extends \PHPUnit_Framework_TestCase
         foreach ($fired as $fire) {
             $this->assertTrue($fire);
         }
+
+        unset($promise);
+
+        $this->assertSame(0, gc_collect_cycles());
     }
 
     public function provideCreateIterations()
@@ -63,6 +69,8 @@ class TickingFuturePromiseTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateIterations($iterations)
     {
+        gc_collect_cycles();
+
         $fired = [
             false,
         ];
@@ -100,6 +108,10 @@ class TickingFuturePromiseTest extends \PHPUnit_Framework_TestCase
         foreach ($fired as $fire) {
             $this->assertTrue($fire);
         }
+
+        unset($promise);
+
+        $this->assertSame(0, gc_collect_cycles());
     }
 
     public function provideInvalidIterations()
@@ -116,11 +128,16 @@ class TickingFuturePromiseTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider provideInvalidIterations
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Iterations must be an integer above zero
      */
     public function testInvalidIterations($iterations)
     {
-        TickingFuturePromise::create(Factory::create(), function () {}, null, $iterations);
+        $this->setExpectedException('\InvalidArgumentException', 'Iterations must be an integer above zero');
+
+        gc_collect_cycles();
+
+        $promise = TickingFuturePromise::create(Factory::create(), function () {}, null, $iterations);
+        unset($promise);
+
+        $this->assertSame(0, gc_collect_cycles());
     }
 }
