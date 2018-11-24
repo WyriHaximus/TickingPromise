@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0d2aede8fa5870489bda0d6a6c307fe1",
+    "content-hash": "6ce30b6abe1cc6851e286fe8b065c13a",
     "packages": [
         {
             "name": "react/event-loop",
@@ -1136,25 +1136,31 @@
         },
         {
             "name": "vectorface/dunit",
-            "version": "v1.4.0",
+            "version": "v2.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Vectorface/dunit.git",
-                "reference": "52b2654b0eca7830f42fd854fa22bc3cc4f92900"
+                "reference": "3f04c7a8bef5ff100666e92db96e93f80a6640bf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Vectorface/dunit/zipball/52b2654b0eca7830f42fd854fa22bc3cc4f92900",
-                "reference": "52b2654b0eca7830f42fd854fa22bc3cc4f92900",
+                "url": "https://api.github.com/repos/Vectorface/dunit/zipball/3f04c7a8bef5ff100666e92db96e93f80a6640bf",
+                "reference": "3f04c7a8bef5ff100666e92db96e93f80a6640bf",
                 "shasum": ""
             },
             "require-dev": {
-                "phpunit/phpunit": "*"
+                "phpunit/phpunit": "~4.3",
+                "symfony/console": "~2.5"
             },
             "bin": [
-                "dunit"
+                "bin/dunit"
             ],
             "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Vectorface\\Dunit\\": "src"
+                }
+            },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
@@ -1179,7 +1185,7 @@
                 "phpunit",
                 "testing"
             ],
-            "time": "2014-11-05T19:29:53+00:00"
+            "time": "2015-03-31T19:30:02+00:00"
         }
     ],
     "aliases": [],

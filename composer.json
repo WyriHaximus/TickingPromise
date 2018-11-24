@@ -15,7 +15,7 @@
         "react/promise": "~2.1"
     },
     "require-dev": {
-        "vectorface/dunit": "~1.4",
+        "vectorface/dunit": "~2.1",
         "phpunit/phpunit": "~4.4",
         "squizlabs/php_codesniffer": "^1.5.6"
     },
