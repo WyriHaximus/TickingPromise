@@ -1,14 +1,18 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace WyriHaximus\React;
 
+use ApiClients\Tools\TestUtilities\TestCase;
 use React\EventLoop\Factory;
 
-class TickingFuturePromiseTest extends \PHPUnit_Framework_TestCase
+/**
+ * @internal
+ */
+final class TickingFuturePromiseTest extends TestCase
 {
-    public function testCreate()
+    public function testCreate(): void
     {
-        gc_collect_cycles();
+        \gc_collect_cycles();
 
         $fired = [
             false,
@@ -17,11 +21,10 @@ class TickingFuturePromiseTest extends \PHPUnit_Framework_TestCase
         ];
         $i = -1;
 
-        $callback = function() use (&$i, &$fired) {
+        $callback = function () use (&$i, &$fired) {
             $i++;
             $fired[$i] = true;
-            switch($i)
-            {
+            switch ($i) {
                 case 0:
                 case 1:
                     return false;
@@ -40,7 +43,7 @@ class TickingFuturePromiseTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('React\Promise\PromiseInterface', $promise);
 
         $callbackCalled = false;
-        $promise->then(function ($result) use (&$callbackCalled) {
+        $promise->then(function ($result) use (&$callbackCalled): void {
             $this->assertSame('foo.bar', $result);
             $callbackCalled = true;
         });
@@ -51,7 +54,7 @@ class TickingFuturePromiseTest extends \PHPUnit_Framework_TestCase
 
         unset($promise);
 
-        $this->assertSame(0, gc_collect_cycles());
+        $this->assertSame(0, \gc_collect_cycles());
     }
 
     public function provideCreateIterations()
@@ -66,10 +69,11 @@ class TickingFuturePromiseTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider provideCreateIterations
+     * @param mixed $iterations
      */
-    public function testCreateIterations($iterations)
+    public function testCreateIterations($iterations): void
     {
-        gc_collect_cycles();
+        \gc_collect_cycles();
 
         $fired = [
             false,
@@ -79,11 +83,10 @@ class TickingFuturePromiseTest extends \PHPUnit_Framework_TestCase
         }
         $i = -1;
 
-        $callback = function() use (&$i, &$fired, $iterations) {
+        $callback = function () use (&$i, &$fired, $iterations) {
             $i++;
             $fired[$i] = true;
-            switch($i)
-            {
+            switch ($i) {
                 case $iterations:
                     return 'foo.bar';
                     break;
@@ -100,7 +103,7 @@ class TickingFuturePromiseTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('React\Promise\PromiseInterface', $promise);
 
         $callbackCalled = false;
-        $promise->then(function ($result) use (&$callbackCalled) {
+        $promise->then(function ($result) use (&$callbackCalled): void {
             $this->assertSame('foo.bar', $result);
             $callbackCalled = true;
         });
@@ -111,7 +114,7 @@ class TickingFuturePromiseTest extends \PHPUnit_Framework_TestCase
 
         unset($promise);
 
-        $this->assertSame(0, gc_collect_cycles());
+        $this->assertSame(0, \gc_collect_cycles());
     }
 
     public function provideInvalidIterations()
@@ -119,7 +122,7 @@ class TickingFuturePromiseTest extends \PHPUnit_Framework_TestCase
         return [
             [-1],
             ['abc'],
-            [new \stdClass],
+            [new \stdClass()],
             [true],
             [false],
             [null],
@@ -128,16 +131,18 @@ class TickingFuturePromiseTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider provideInvalidIterations
+     * @param mixed $iterations
      */
-    public function testInvalidIterations($iterations)
+    public function testInvalidIterations($iterations): void
     {
-        $this->setExpectedException('\InvalidArgumentException', 'Iterations must be an integer above zero');
+        $this->expectException('\InvalidArgumentException', 'Iterations must be an integer above zero');
 
-        gc_collect_cycles();
+        \gc_collect_cycles();
 
-        $promise = TickingFuturePromise::create(Factory::create(), function () {}, null, $iterations);
+        $promise = TickingFuturePromise::create(Factory::create(), function (): void {
+        }, null, $iterations);
         unset($promise);
 
-        $this->assertSame(0, gc_collect_cycles());
+        $this->assertSame(0, \gc_collect_cycles());
     }
 }

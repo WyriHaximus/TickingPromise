@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace WyriHaximus\React;
 
@@ -16,9 +16,10 @@ use React\Promise\Deferred;
 function futurePromise(LoopInterface $loop, $value = null)
 {
     $deferred = new Deferred();
-    $loop->futureTick(function () use ($deferred, $value) {
+    $loop->futureTick(function () use ($deferred, $value): void {
         $deferred->resolve($value);
     });
+
     return $deferred->promise();
 }
 
@@ -41,7 +42,7 @@ function nextPromise(LoopInterface $loop, $value = null)
  * Promise that resolves after $interval has passed.
  *
  * @param LoopInterface $loop     ReactPHP event loop.
- * @param integer       $interval The number of seconds to wait before execution.
+ * @param int           $interval The number of seconds to wait before execution.
  * @param mixed         $value    Value to return on resolve.
  *
  * @return \React\Promise\Promise
@@ -49,9 +50,10 @@ function nextPromise(LoopInterface $loop, $value = null)
 function timedPromise(LoopInterface $loop, $interval, $value = null)
 {
     $deferred = new Deferred();
-    $loop->addTimer($interval, function () use ($deferred, $value) {
+    $loop->addTimer($interval, function () use ($deferred, $value): void {
         $deferred->resolve($value);
     });
+
     return $deferred->promise();
 }
 
@@ -59,7 +61,7 @@ function timedPromise(LoopInterface $loop, $interval, $value = null)
  * Promise that resolves once $check returns something other then false. Runs at periodic $interval.
  *
  * @param LoopInterface $loop     ReactPHP event loop.
- * @param integer       $interval The number of seconds between each interval to run $check.
+ * @param int           $interval The number of seconds between each interval to run $check.
  * @param callable      $check    Callable to run at the specified $interval.
  * @param mixed         $value    Value to pass into $check on tick.
  *
@@ -68,14 +70,15 @@ function timedPromise(LoopInterface $loop, $interval, $value = null)
 function tickingPromise(LoopInterface $loop, $interval, callable $check, $value = null)
 {
     $deferred = new Deferred();
-    $loop->addPeriodicTimer($interval, function ($timer) use ($deferred, $check, $value, $loop) {
-        $deferred->progress(time());
+    $loop->addPeriodicTimer($interval, function ($timer) use ($deferred, $check, $value, $loop): void {
+        $deferred->progress(\time());
         $result = $check($value);
         if ($result !== false) {
             $loop->cancelTimer($timer);
             $deferred->resolve($result);
         }
     });
+
     return $deferred->promise();
 }
 
@@ -85,7 +88,7 @@ function tickingPromise(LoopInterface $loop, $interval, callable $check, $value 
  * @param LoopInterface $loop       ReactPHP event loop.
  * @param callable      $check      Callable to run at tick.
  * @param mixed         $value      Value to pass into $check on tick.
- * @param integer       $iterations Number of iterations to call $check in one tick.
+ * @param int           $iterations Number of iterations to call $check in one tick.
  *
  * @return \React\Promise\Promise
  */

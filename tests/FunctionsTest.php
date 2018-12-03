@@ -1,108 +1,74 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace WyriHaximus\React\Tests;
 
+use ApiClients\Tools\TestUtilities\TestCase;
 use React\EventLoop\Factory;
+use function WyriHaximus\React\futurePromise;
+use function WyriHaximus\React\nextPromise;
+use function WyriHaximus\React\tickingFuturePromise;
+use function WyriHaximus\React\tickingPromise;
+use function WyriHaximus\React\timedPromise;
 
-class FunctionsTest extends \PHPUnit_Framework_TestCase
+/**
+ * @internal
+ */
+class FunctionsTest extends TestCase
 {
-    public function testFuturePromise()
+    public function testFuturePromise(): void
     {
-        gc_collect_cycles();
+        \gc_collect_cycles();
 
         $inputData = 'foo.bar';
 
-        $loop = $this->mockLoop();
+        $loop = Factory::create();
 
-        $loop
-            ->expects($this->once())
-            ->method('futureTick')
-            ->with($this->isType('callable'))
-            ->will($this->returnCallback(function ($resolveCb) {
-                $resolveCb('foo.bar' . (string)microtime(true));
-            }))
-        ;
-
-        $promise = \WyriHaximus\React\futurePromise($loop, $inputData);
-        $this->assertInstanceOf('React\Promise\PromiseInterface', $promise);
-
-        $callbackCalled = false;
-        $promise->then(function ($data) use (&$callbackCalled, $inputData) {
-            $this->assertSame($inputData, $data);
-            $callbackCalled = true;
-        });
-        $this->assertTrue($callbackCalled);
+        $promise = futurePromise($loop, $inputData);
+        $data = $this->await($promise, $loop);
+        self::assertSame($inputData, $data);
 
         unset($promise);
 
-        $this->assertSame(0, gc_collect_cycles());
+        self::assertSame(0, \gc_collect_cycles());
     }
 
-    public function testNextPromise()
+    public function testNextPromise(): void
     {
-        gc_collect_cycles();
+        \gc_collect_cycles();
 
         $inputData = 'foo.bar';
-        $loop = $this->mockLoop();
 
-        $loop
-            ->expects($this->once())
-            ->method('futureTick')
-            ->with($this->isType('callable'))
-            ->will($this->returnCallback(function ($resolveCb) {
-                $resolveCb('foo.bar' . (string)microtime(true));
-            }))
-        ;
+        $loop = Factory::create();
 
-        $promise = \WyriHaximus\React\nextPromise($loop, $inputData);
-        $this->assertInstanceOf('React\Promise\PromiseInterface', $promise);
-
-        $callbackCalled = false;
-        $promise->then(function ($data) use (&$callbackCalled, $inputData) {
-            $this->assertSame($inputData, $data);
-            $callbackCalled = true;
-        });
-        $this->assertTrue($callbackCalled);
+        $promise = nextPromise($loop, $inputData);
+        $data = $this->await($promise, $loop);
+        self::assertSame($inputData, $data);
 
         unset($promise);
 
-        $this->assertSame(0, gc_collect_cycles());
+        self::assertSame(0, \gc_collect_cycles());
     }
 
-    public function testTimedPromise()
+    public function testTimedPromise(): void
     {
-        gc_collect_cycles();
+        \gc_collect_cycles();
 
         $inputData = 'foo.bar';
-        $loop = $this->mockLoop();
 
-        $loop
-            ->expects($this->once())
-            ->method('addTimer')
-            ->with($this->isType('numeric'), $this->isType('callable'))
-            ->will($this->returnCallback(function ($interval, $resolveCb) {
-                $resolveCb('foo.bar' . (string)microtime(true));
-            }))
-        ;
+        $loop = Factory::create();
 
-        $promise = \WyriHaximus\React\timedPromise($loop, 123, $inputData);
-        $this->assertInstanceOf('React\Promise\PromiseInterface', $promise);
-
-        $callbackCalled = false;
-        $promise->then(function ($data) use (&$callbackCalled, $inputData) {
-            $this->assertSame($inputData, $data);
-            $callbackCalled = true;
-        });
-        $this->assertTrue($callbackCalled);
+        $promise = timedPromise($loop, 0.23, $inputData);
+        $data = $this->await($promise, $loop);
+        self::assertSame($inputData, $data);
 
         unset($promise);
 
-        $this->assertSame(0, gc_collect_cycles());
+        self::assertSame(0, \gc_collect_cycles());
     }
 
-    public function testTickingPromise()
+    public function testTickingPromise(): void
     {
-        gc_collect_cycles();
+        \gc_collect_cycles();
 
         $loop = Factory::create();
 
@@ -113,12 +79,11 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
             false,
         ];
         $i = -1;
-        $callback = function($data) use (&$i, &$fired, $inputData) {
+        $callback = function ($data) use (&$i, &$fired, $inputData) {
             $this->assertSame($inputData, $data);
             $i++;
             $fired[$i] = true;
-            switch($i)
-            {
+            switch ($i) {
                 case 0:
                 case 1:
                     return false;
@@ -130,37 +95,31 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
             }
         };
 
-        $promise = \WyriHaximus\React\tickingPromise($loop, 1, $callback, $inputData);
-        $loop->run();
-        $this->assertInstanceOf('React\Promise\PromiseInterface', $promise);
+        $promise = tickingPromise($loop, 1, $callback, $inputData);
+        $data = $this->await($promise, $loop);
+        self::assertSame($inputData, $data);
 
-        $callbackCalled = false;
-        $promise->then(function ($result) use (&$callbackCalled) {
-            $this->assertSame('foo.bar', $result);
-            $callbackCalled = true;
-        });
-        $this->assertTrue($callbackCalled);
         foreach ($fired as $fire) {
-            $this->assertTrue($fire);
+            self::assertTrue($fire);
         }
         unset($promise);
 
-        $this->assertSame(0, gc_collect_cycles());
+        self::assertSame(0, \gc_collect_cycles());
     }
 
-    public function testTickingFuturePromise()
+    public function testTickingFuturePromise(): void
     {
-        gc_collect_cycles();
+        \gc_collect_cycles();
 
         $loop = Factory::create();
-        $promise = \WyriHaximus\React\tickingFuturePromise($loop, function () {
+        $promise = tickingFuturePromise($loop, function () {
             return true;
         });
         $this->assertInstanceOf('\React\Promise\Promise', $promise);
         $loop->run();
         unset($promise);
 
-        $this->assertSame(0, gc_collect_cycles());
+        $this->assertSame(0, \gc_collect_cycles());
     }
 
     public function providerFutureFunctionPromise()
@@ -180,7 +139,7 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
                 'Deal with it!',
                 'Deal with it!',
                 function ($str) {
-                    return str_rot13(str_rot13($str));
+                    return \str_rot13(\str_rot13($str));
                 },
             ],
             [
@@ -200,56 +159,22 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerFutureFunctionPromise
+     * @param mixed $inputData
+     * @param mixed $outputDate
+     * @param mixed $function
      */
-    public function testFutureFunctionPromise($inputData, $outputDate, $function)
+    public function testFutureFunctionPromise($inputData, $outputDate, $function): void
     {
-        gc_collect_cycles();
+        \gc_collect_cycles();
 
-        $loop = $this->mockLoop();
-
-        $loop
-            ->expects($this->any())
-            ->method('futureTick')
-            ->with($this->isType('callable'))
-            ->will($this->returnCallback(function ($resolveCb) {
-                $resolveCb('foo.bar' . (string)microtime(true));
-            }))
-        ;
-
+        $loop = Factory::create();
         $promise = \WyriHaximus\React\futureFunctionPromise($loop, $inputData, $function);
-        $this->assertInstanceOf('React\Promise\PromiseInterface', $promise);
 
-        $callbackCalled = false;
-        $promise->then(function ($data) use (&$callbackCalled, $outputDate) {
-            $this->assertSame($outputDate, $data);
-            $callbackCalled = true;
-        });
-        $this->assertTrue($callbackCalled);
+        $data = $this->await($promise, $loop);
+        $this->assertSame($outputDate, $data);
 
         unset($promise);
 
-        $this->assertSame(0, gc_collect_cycles());
-    }
-
-    protected function mockLoop()
-    {
-        return $this->getMock('React\EventLoop\LoopInterface', [
-            'futureTick',
-            'nextTick',
-            'addReadStream',
-            'addWriteStream',
-            'removeReadStream',
-            'removeWriteStream',
-            'removeStream',
-            'addTimer',
-            'addPeriodicTimer',
-            'cancelTimer',
-            'isTimerActive',
-            'addSignal',
-            'removeSignal',
-            'run',
-            'stop',
-            'tick',
-        ]);
+        $this->assertSame(0, \gc_collect_cycles());
     }
 }
