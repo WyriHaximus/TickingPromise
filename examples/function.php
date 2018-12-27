@@ -7,7 +7,7 @@ $loop = \React\EventLoop\Factory::create();
 \WyriHaximus\React\futureFunctionPromise($loop, \json_encode([
     'time' => \time(),
 ]), 'json_decode')->then(function ($json): void {
-    echo DateTime::createFromFormat('U', $json->time)->format('r'), PHP_EOL;
+    echo DateTime::createFromFormat('U', $json->time)->format('r'), \PHP_EOL;
 });
 
 $loop->run();

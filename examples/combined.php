@@ -18,10 +18,10 @@ $loop = \React\EventLoop\Factory::create();
 })->then(function ($time) use ($loop) {
     return \WyriHaximus\React\timedPromise($loop, 3, $time);
 })->then(function ($time): void {
-    echo PHP_EOL;
-    echo DateTime::createFromFormat('U', $time)->format('r'), PHP_EOL;
-    echo DateTime::createFromFormat('U', \time())->format('r'), PHP_EOL;
-    echo 'Done', PHP_EOL;
+    echo \PHP_EOL;
+    echo DateTime::createFromFormat('U', $time)->format('r'), \PHP_EOL;
+    echo DateTime::createFromFormat('U', \time())->format('r'), \PHP_EOL;
+    echo 'Done', \PHP_EOL;
 });
 
 $loop->run();

@@ -9,7 +9,7 @@ const WAIT_INTERVAL = 0.01;
 
 $start = \time();
 $count = 0;
-echo 'Wait ' . WAIT_COUNT . ' * ' . WAIT_INTERVAL . ' seconds before resolving:', PHP_EOL;
+echo 'Wait ' . WAIT_COUNT . ' * ' . WAIT_INTERVAL . ' seconds before resolving:', \PHP_EOL;
 \WyriHaximus\React\tickingPromise($loop, WAIT_INTERVAL, function ($waitCount) use (&$count, $start) {
     echo '.';
 
@@ -19,7 +19,7 @@ echo 'Wait ' . WAIT_COUNT . ' * ' . WAIT_INTERVAL . ' seconds before resolving:'
 
     return false;
 }, WAIT_COUNT)->then(function ($start): void {
-    echo PHP_EOL, 'That took ' . (\time() - $start) . ' seconds.', PHP_EOL;
+    echo \PHP_EOL, 'That took ' . (\time() - $start) . ' seconds.', \PHP_EOL;
 });
 
 $loop->run();

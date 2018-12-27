@@ -8,7 +8,7 @@ const WAIT_COUNT = 307200;
 
 $start = \time();
 $count = 0;
-echo 'Wait ' . WAIT_COUNT . ' ticks before resolving:', PHP_EOL;
+echo 'Wait ' . WAIT_COUNT . ' ticks before resolving:', \PHP_EOL;
 \WyriHaximus\React\tickingFuturePromise($loop, function ($waitCount) use (&$count, $start) {
     echo '.';
 
@@ -18,9 +18,9 @@ echo 'Wait ' . WAIT_COUNT . ' ticks before resolving:', PHP_EOL;
 
     return false;
 }, WAIT_COUNT)->then(function ($start): void {
-    echo PHP_EOL, 'That took ' . (\time() - $start) . ' seconds.', PHP_EOL;
+    echo \PHP_EOL, 'That took ' . (\time() - $start) . ' seconds.', \PHP_EOL;
 }, function ($exception): void {
-    echo $exception->getMessage(), PHP_EOL;
+    echo $exception->getMessage(), \PHP_EOL;
 });
 
 $loop->run();
