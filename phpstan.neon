@@ -1,0 +1,10 @@
+parameters:
+	ignoreErrors:
+		- '#Function WyriHaximus\\React\\futurePromise\(\) has parameter \$value with null as default value.#'
+		- '#Function WyriHaximus\\React\\timedPromise\(\) has parameter \$value with null as default value.#'
+		- '#Function WyriHaximus\\React\\tickingPromise\(\) has parameter \$value with null as default value.#'
+		- '#Function WyriHaximus\\React\\tickingFuturePromise\(\) has parameter \$value with null as default value.#'
+		- '#Language construct eval\(\) should not be used.#'
+
+includes:
+	- vendor/wyrihaximus/async-test-utilities/rules.neon

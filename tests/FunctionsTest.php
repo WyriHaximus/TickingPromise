@@ -1,180 +1,161 @@
-<?php declare(strict_types=1);
+<?php
 
-namespace WyriHaximus\React\Tests;
+declare(strict_types=1);
 
-use ApiClients\Tools\TestUtilities\TestCase;
+namespace WyriHaximus\Tests\React;
+
 use React\EventLoop\Factory;
+use WyriHaximus\AsyncTestUtilities\AsyncTestCase;
+
+use function gc_collect_cycles;
+use function str_rot13;
+use function WyriHaximus\React\futureFunctionPromise;
 use function WyriHaximus\React\futurePromise;
-use function WyriHaximus\React\nextPromise;
 use function WyriHaximus\React\tickingFuturePromise;
 use function WyriHaximus\React\tickingPromise;
 use function WyriHaximus\React\timedPromise;
 
-/**
- * @internal
- */
-class FunctionsTest extends TestCase
+final class FunctionsTest extends AsyncTestCase
 {
     public function testFuturePromise(): void
     {
-        \gc_collect_cycles();
+        gc_collect_cycles();
 
         $inputData = 'foo.bar';
 
         $loop = Factory::create();
 
         $promise = futurePromise($loop, $inputData);
-        $data = $this->await($promise, $loop);
+        $data    = $this->await($promise, $loop);
         self::assertSame($inputData, $data);
 
         unset($promise);
 
-        self::assertSame(0, \gc_collect_cycles());
-    }
-
-    public function testNextPromise(): void
-    {
-        \gc_collect_cycles();
-
-        $inputData = 'foo.bar';
-
-        $loop = Factory::create();
-
-        $promise = nextPromise($loop, $inputData);
-        $data = $this->await($promise, $loop);
-        self::assertSame($inputData, $data);
-
-        unset($promise);
-
-        self::assertSame(0, \gc_collect_cycles());
+        self::assertSame(0, gc_collect_cycles());
     }
 
     public function testTimedPromise(): void
     {
-        \gc_collect_cycles();
+        gc_collect_cycles();
 
         $inputData = 'foo.bar';
 
         $loop = Factory::create();
 
         $promise = timedPromise($loop, 0.23, $inputData);
-        $data = $this->await($promise, $loop);
+        $data    = $this->await($promise, $loop);
         self::assertSame($inputData, $data);
 
         unset($promise);
 
-        self::assertSame(0, \gc_collect_cycles());
+        self::assertSame(0, gc_collect_cycles());
+    }
+
+    public function testTickingFuturePromise(): void
+    {
+        gc_collect_cycles();
+
+        $loop    = Factory::create();
+        $promise = tickingFuturePromise($loop, static fn (): bool => true);
+        $loop->run();
+        gc_collect_cycles();
+        unset($promise);
+
+        self::assertSame(0, gc_collect_cycles());
     }
 
     public function testTickingPromise(): void
     {
-        \gc_collect_cycles();
+        gc_collect_cycles();
 
         $loop = Factory::create();
 
         $inputData = 'foo.bar';
-        $fired = [
+        $fired     = [
             false,
             false,
             false,
         ];
-        $i = -1;
-        $callback = function ($data) use (&$i, &$fired, $inputData) {
-            $this->assertSame($inputData, $data);
+        $i         = -1;
+        $callback  = static function ($data) use (&$i, &$fired, $inputData) {
+            self::assertSame($inputData, $data);
             $i++;
             $fired[$i] = true;
-            switch ($i) {
-                case 0:
-                case 1:
+            if ($i === 0 || $i === 1) {
                     return false;
-                    break;
-                default:
-                case 2:
-                    return 'foo.bar';
-                    break;
             }
+
+            return 'foo.bar';
         };
 
         $promise = tickingPromise($loop, 1, $callback, $inputData);
-        $data = $this->await($promise, $loop);
+        $data    = $this->await($promise, $loop);
         self::assertSame($inputData, $data);
 
         foreach ($fired as $fire) {
             self::assertTrue($fire);
         }
+
         unset($promise);
 
-        self::assertSame(0, \gc_collect_cycles());
+        self::assertSame(0, gc_collect_cycles());
     }
 
-    public function testTickingFuturePromise(): void
+    /**
+     * @return iterable<array<mixed>>
+     */
+    public function providerFutureFunctionPromise(): iterable
     {
-        \gc_collect_cycles();
+        yield [
+            'foo.bar',
+            'rab.oof',
+            'strrev',
+        ];
 
-        $loop = Factory::create();
-        $promise = tickingFuturePromise($loop, function () {
-            return true;
-        });
-        $this->assertInstanceOf('\React\Promise\Promise', $promise);
-        $loop->run();
-        unset($promise);
+        yield [
+            'Qrny jvgu vg!',
+            'Deal with it!',
+            'str_rot13',
+        ];
 
-        $this->assertSame(0, \gc_collect_cycles());
-    }
+        yield [
+            'Deal with it!',
+            'Deal with it!',
+            static fn (string $str): string => str_rot13(str_rot13($str)),
+        ];
 
-    public function providerFutureFunctionPromise()
-    {
-        return [
-            [
-                'foo.bar',
-                'rab.oof',
-                'strrev',
-            ],
-            [
-                'Qrny jvgu vg!',
-                'Deal with it!',
-                'str_rot13',
-            ],
-            [
-                'Deal with it!',
-                'Deal with it!',
-                function ($str) {
-                    return \str_rot13(\str_rot13($str));
-                },
-            ],
-            [
-                'abcr',
-                'nope',
-                'str_rot13',
-            ],
-            [
-                'return "nope! NOPE! nope! NOPE! nope! NOPE! nope! NOPE! nope! NOPE!";',
-                'nope! NOPE! nope! NOPE! nope! NOPE! nope! NOPE! nope! NOPE!',
-                function ($str) {
-                    return eval($str);
-                },
-            ],
+        yield [
+            'abcr',
+            'nope',
+            'str_rot13',
+        ];
+
+        yield [
+            'return "nope! NOPE! nope! NOPE! nope! NOPE! nope! NOPE! nope! NOPE!";',
+            'nope! NOPE! nope! NOPE! nope! NOPE! nope! NOPE! nope! NOPE!',
+            static fn (string $str): string => eval($str), // @phpstan-ignore-line
         ];
     }
 
     /**
-     * @dataProvider providerFutureFunctionPromise
      * @param mixed $inputData
      * @param mixed $outputDate
      * @param mixed $function
+     *
+     * @dataProvider providerFutureFunctionPromise
      */
     public function testFutureFunctionPromise($inputData, $outputDate, $function): void
     {
-        \gc_collect_cycles();
+        gc_collect_cycles();
 
-        $loop = Factory::create();
-        $promise = \WyriHaximus\React\futureFunctionPromise($loop, $inputData, $function);
+        $loop    = Factory::create();
+        $promise = futureFunctionPromise($loop, $inputData, $function);
 
         $data = $this->await($promise, $loop);
-        $this->assertSame($outputDate, $data);
+        self::assertSame($outputDate, $data);
 
         unset($promise);
 
-        $this->assertSame(0, \gc_collect_cycles());
+        self::assertSame(0, gc_collect_cycles());
     }
 }
