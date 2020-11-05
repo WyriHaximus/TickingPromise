@@ -1,10 +1,10 @@
-TickingPromise
-==============
+# TickingPromise
 
-[![Build Status](https://travis-ci.org/WyriHaximus/TickingPromise.png)](https://travis-ci.org/WyriHaximus/TickingPromise)
-[![Latest Stable Version](https://poser.pugx.org/WyriHaximus/ticking-promise/v/stable.png)](https://packagist.org/packages/WyriHaximus/ticking-promise)
-[![Total Downloads](https://poser.pugx.org/WyriHaximus/ticking-promise/downloads.png)](https://packagist.org/packages/WyriHaximus/ticking-promise)
-[![Coverage Status](https://coveralls.io/repos/WyriHaximus/TickingPromise/badge.png)](https://coveralls.io/r/WyriHaximus/TickingPromise)
+![Continuous Integration](https://github.com/wyrihaximus/TickingPromise/workflows/Continuous%20Integration/badge.svg)
+[![Latest Stable Version](https://poser.pugx.org/wyrihaximus/ticking-promise/v/stable.png)](https://packagist.org/packages/wyrihaximus/ticking-promise)
+[![Total Downloads](https://poser.pugx.org/wyrihaximus/ticking-promise/downloads.png)](https://packagist.org/packages/wyrihaximus/ticking-promise/stats)
+[![Code Coverage](https://coveralls.io/repos/github/WyriHaximus/TickingPromise/badge.svg?branchmaster)](https://coveralls.io/github/WyriHaximus/TickingPromise?branch=master)
+[![Type Coverage](https://shepherd.dev/github/WyriHaximus/TickingPromise/coverage.svg)](https://shepherd.dev/github/WyriHaximus/TickingPromise)
 [![License](https://poser.pugx.org/wyrihaximus/ticking-promise/license.png)](https://packagist.org/packages/wyrihaximus/ticking-promise)
 
 Wrapping event loop ticks into a promise. 
@@ -22,12 +22,18 @@ composer require wyrihaximus/ticking-promise
 ```php
 <?php
 
-$loop = \React\EventLoop\Factory::create();
+declare(strict_types=1);
 
-\WyriHaximus\React\futurePromise($loop)->then(function () {
+use React\EventLoop\Factory;
+
+use function WyriHaximus\React\futurePromise;
+
+$loop = Factory::create();
+
+futurePromise($loop)->then(static function (): void {
     echo 'Done', PHP_EOL;
 });
-\WyriHaximus\React\futurePromise($loop)->then(function ($message) {
+futurePromise($loop)->then(static function (string $message): void {
     echo $message, PHP_EOL;
 }, 'Also done');
 
@@ -38,7 +44,7 @@ For more examples check the [examples directory](https://github.com/WyriHaximus/
 
 ## License ##
 
-Copyright 2016 [Cees-Jan Kiewiet](http://wyrihaximus.net/)
+Copyright 2020 [Cees-Jan Kiewiet](http://wyrihaximus.net/)
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation
