@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "php": "^7.4",
+        "php": "^8 || ^7.4",
         "react/event-loop": "^1.0",
         "react/promise": "^2.8"
     },
