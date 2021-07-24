@@ -2,14 +2,12 @@
 
 require \dirname(__DIR__) . '/vendor/autoload.php';
 
-$loop = \React\EventLoop\Factory::create();
-
 const WAIT_COUNT = 307200;
 
 $start = \time();
 $count = 0;
 echo 'Wait ' . WAIT_COUNT . ' ticks before resolving:', \PHP_EOL;
-\WyriHaximus\React\tickingFuturePromise($loop, function ($waitCount) use (&$count, $start) {
+\WyriHaximus\React\tickingFuturePromise(function ($waitCount) use (&$count, $start) {
     echo '.';
 
     if (++$count == $waitCount) {
@@ -22,5 +20,3 @@ echo 'Wait ' . WAIT_COUNT . ' ticks before resolving:', \PHP_EOL;
 }, function ($exception): void {
     echo $exception->getMessage(), \PHP_EOL;
 });
-
-$loop->run();

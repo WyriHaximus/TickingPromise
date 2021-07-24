@@ -11,11 +11,11 @@
     ],
     "require": {
         "php": "^8 || ^7.4",
-        "react/event-loop": "^1.0",
+        "react/event-loop": "^1.2",
         "react/promise": "^2.8"
     },
     "require-dev": {
-        "wyrihaximus/async-test-utilities": "^3"
+        "wyrihaximus/async-test-utilities": "^3.4.24"
     },
     "config": {
         "platform": {

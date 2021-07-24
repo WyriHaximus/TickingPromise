@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace WyriHaximus\React;
 
-use React\EventLoop\LoopInterface;
+use React\EventLoop\Loop;
 use React\EventLoop\TimerInterface;
 use React\Promise\Deferred;
 use React\Promise\Promise;
@@ -13,13 +13,12 @@ use React\Promise\PromiseInterface;
 /**
  * Promise that resolves once future tick is called.
  *
- * @param LoopInterface $loop  ReactPHP event loop.
- * @param mixed         $value Value to return on resolve.
+ * @param mixed $value Value to return on resolve.
  */
-function futurePromise(LoopInterface $loop, $value = null): PromiseInterface
+function futurePromise($value = null): PromiseInterface
 {
     $deferred = new Deferred();
-    $loop->futureTick(static function () use ($deferred, $value): void {
+    Loop::futureTick(static function () use ($deferred, $value): void {
         $deferred->resolve($value);
     });
 
@@ -29,14 +28,13 @@ function futurePromise(LoopInterface $loop, $value = null): PromiseInterface
 /**
  * Promise that resolves after $interval has passed.
  *
- * @param LoopInterface $loop     ReactPHP event loop.
- * @param float         $interval The number of seconds to wait before execution.
- * @param mixed         $value    Value to return on resolve.
+ * @param float $interval The number of seconds to wait before execution.
+ * @param mixed $value    Value to return on resolve.
  */
-function timedPromise(LoopInterface $loop, float $interval, $value = null): PromiseInterface
+function timedPromise(float $interval, $value = null): PromiseInterface
 {
     $deferred = new Deferred();
-    $loop->addTimer($interval, static function () use ($deferred, $value): void {
+    Loop::addTimer($interval, static function () use ($deferred, $value): void {
         $deferred->resolve($value);
     });
 
@@ -46,21 +44,20 @@ function timedPromise(LoopInterface $loop, float $interval, $value = null): Prom
 /**
  * Promise that resolves once $check returns something other then false. Runs at periodic $interval.
  *
- * @param LoopInterface $loop     ReactPHP event loop.
- * @param float         $interval The number of seconds between each interval to run $check.
- * @param callable      $check    Callable to run at the specified $interval.
- * @param mixed         $value    Value to pass into $check on tick.
+ * @param float    $interval The number of seconds between each interval to run $check.
+ * @param callable $check    Callable to run at the specified $interval.
+ * @param mixed    $value    Value to pass into $check on tick.
  */
-function tickingPromise(LoopInterface $loop, float $interval, callable $check, $value = null): PromiseInterface
+function tickingPromise(float $interval, callable $check, $value = null): PromiseInterface
 {
     $deferred = new Deferred();
-    $loop->addPeriodicTimer($interval, static function (TimerInterface $timer) use ($deferred, $check, $value, $loop): void {
+    Loop::addPeriodicTimer($interval, static function (TimerInterface $timer) use ($deferred, $check, $value): void {
         $result = $check($value);
         if ($result === false) {
             return;
         }
 
-        $loop->cancelTimer($timer);
+        Loop::cancelTimer($timer);
         $deferred->resolve($result);
     });
 
@@ -70,15 +67,14 @@ function tickingPromise(LoopInterface $loop, float $interval, callable $check, $
 /**
  * Promise that resolves once $check returns something other then false. Runs at future tick interval.
  *
- * @param LoopInterface $loop       ReactPHP event loop.
- * @param callable      $check      Callable to run at tick.
- * @param mixed         $value      Value to pass into $check on tick.
- * @param int           $iterations Number of iterations to call $check in one tick.
+ * @param callable $check      Callable to run at tick.
+ * @param mixed    $value      Value to pass into $check on tick.
+ * @param int      $iterations Number of iterations to call $check in one tick.
  */
-function tickingFuturePromise(LoopInterface $loop, callable $check, $value = null, int $iterations = 1): PromiseInterface
+function tickingFuturePromise(callable $check, $value = null, int $iterations = 1): PromiseInterface
 {
-    return new Promise(static function (callable $resolve) use ($loop, $check, $iterations, $value): void {
-        $runCheck = static function () use ($loop, $check, &$runCheck, $resolve, $iterations, $value): void {
+    return new Promise(static function (callable $resolve) use ($check, $iterations, $value): void {
+        $runCheck = static function () use ($check, &$runCheck, $resolve, $iterations, $value): void {
             for ($i = 0; $i <= $iterations; $i++) {
                 $result = $check($value);
                 if ($result !== false) {
@@ -88,22 +84,21 @@ function tickingFuturePromise(LoopInterface $loop, callable $check, $value = nul
                 }
             }
 
-            futurePromise($loop)->then($runCheck);
+            futurePromise()->then($runCheck);
         };
 
-        futurePromise($loop)->then($runCheck);
+        futurePromise()->then($runCheck);
     });
 }
 
 /**
  * Sandwich a $function call within two futureTicks.
  *
- * @param LoopInterface $loop     ReactPHP event loop.
- * @param mixed         $value    Value to pass into $function.
- * @param callable      $function Function to wrap.
+ * @param mixed    $value    Value to pass into $function.
+ * @param callable $function Function to wrap.
  */
-function futureFunctionPromise(LoopInterface $loop, $value, callable $function): PromiseInterface
+function futureFunctionPromise($value, callable $function): PromiseInterface
 {
     /** @psalm-suppress MissingClosureParamType */
-    return futurePromise($loop, $value)->then(static fn ($value): PromiseInterface => futurePromise($loop, $function($value)));
+    return futurePromise($value)->then(static fn ($value): PromiseInterface => futurePromise($function($value)));
 }
