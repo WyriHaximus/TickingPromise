@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace WyriHaximus\Tests\React;
 
-use React\EventLoop\Factory;
+use React\EventLoop\Loop;
 use WyriHaximus\AsyncTestUtilities\AsyncTestCase;
 
 use function gc_collect_cycles;
@@ -23,10 +23,8 @@ final class FunctionsTest extends AsyncTestCase
 
         $inputData = 'foo.bar';
 
-        $loop = Factory::create();
-
-        $promise = futurePromise($loop, $inputData);
-        $data    = $this->await($promise, $loop);
+        $promise = futurePromise($inputData);
+        $data    = $this->await($promise, Loop::get());
         self::assertSame($inputData, $data);
 
         unset($promise);
@@ -40,10 +38,8 @@ final class FunctionsTest extends AsyncTestCase
 
         $inputData = 'foo.bar';
 
-        $loop = Factory::create();
-
-        $promise = timedPromise($loop, 0.23, $inputData);
-        $data    = $this->await($promise, $loop);
+        $promise = timedPromise(0.23, $inputData);
+        $data    = $this->await($promise, Loop::get());
         self::assertSame($inputData, $data);
 
         unset($promise);
@@ -55,9 +51,8 @@ final class FunctionsTest extends AsyncTestCase
     {
         gc_collect_cycles();
 
-        $loop    = Factory::create();
-        $promise = tickingFuturePromise($loop, static fn (): bool => true);
-        $loop->run();
+        $promise = tickingFuturePromise(static fn (): bool => true);
+        Loop::run();
         gc_collect_cycles();
         unset($promise);
 
@@ -67,8 +62,6 @@ final class FunctionsTest extends AsyncTestCase
     public function testTickingPromise(): void
     {
         gc_collect_cycles();
-
-        $loop = Factory::create();
 
         $inputData = 'foo.bar';
         $fired     = [
@@ -88,8 +81,8 @@ final class FunctionsTest extends AsyncTestCase
             return 'foo.bar';
         };
 
-        $promise = tickingPromise($loop, 1, $callback, $inputData);
-        $data    = $this->await($promise, $loop);
+        $promise = tickingPromise(1, $callback, $inputData);
+        $data    = $this->await($promise, Loop::get());
         self::assertSame($inputData, $data);
 
         foreach ($fired as $fire) {
@@ -148,10 +141,9 @@ final class FunctionsTest extends AsyncTestCase
     {
         gc_collect_cycles();
 
-        $loop    = Factory::create();
-        $promise = futureFunctionPromise($loop, $inputData, $function);
+        $promise = futureFunctionPromise($inputData, $function);
 
-        $data = $this->await($promise, $loop);
+        $data = $this->await($promise, Loop::get());
         self::assertSame($outputDate, $data);
 
         unset($promise);
