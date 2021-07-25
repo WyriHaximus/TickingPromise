@@ -24,27 +24,21 @@ composer require wyrihaximus/ticking-promise
 
 declare(strict_types=1);
 
-use React\EventLoop\Factory;
-
 use function WyriHaximus\React\futurePromise;
 
-$loop = Factory::create();
-
-futurePromise($loop)->then(static function (): void {
+futurePromise()->then(static function (): void {
     echo 'Done', PHP_EOL;
 });
-futurePromise($loop)->then(static function (string $message): void {
+futurePromise()->then(static function (string $message): void {
     echo $message, PHP_EOL;
 }, 'Also done');
-
-$loop->run();
 ```
 
 For more examples check the [examples directory](https://github.com/WyriHaximus/TickingPromise/tree/master/examples).
 
 ## License ##
 
-Copyright 2020 [Cees-Jan Kiewiet](http://wyrihaximus.net/)
+Copyright 2021 [Cees-Jan Kiewiet](http://wyrihaximus.net/)
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation
