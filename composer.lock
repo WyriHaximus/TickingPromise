@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "23d5056503e95168ce263e330209a8e0",
+    "content-hash": "208c565f2ca6d172645a52f573da3bf1",
     "packages": [
         {
             "name": "react/event-loop",
@@ -8255,23 +8255,23 @@
         },
         {
             "name": "wyrihaximus/async-test-utilities",
-            "version": "3.4.24",
+            "version": "4.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/WyriHaximus/php-async-test-utilities.git",
-                "reference": "fee2c6404f646d3c4040974040a2001d22a92de7"
+                "reference": "9ac7c4f4b33fe9dd47c9e98c8cace21260835767"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/WyriHaximus/php-async-test-utilities/zipball/fee2c6404f646d3c4040974040a2001d22a92de7",
-                "reference": "fee2c6404f646d3c4040974040a2001d22a92de7",
+                "url": "https://api.github.com/repos/WyriHaximus/php-async-test-utilities/zipball/9ac7c4f4b33fe9dd47c9e98c8cace21260835767",
+                "reference": "9ac7c4f4b33fe9dd47c9e98c8cace21260835767",
                 "shasum": ""
             },
             "require": {
                 "clue/block-react": "^1.4",
                 "php": "^8 || ^7.4",
                 "phpunit/phpunit": "^9.5",
-                "react/event-loop": "^1.1",
+                "react/event-loop": "^1.2",
                 "react/promise": "^2.8",
                 "wyrihaximus/test-utilities": "^3.7.0"
             },
@@ -8297,7 +8297,7 @@
             "description": "Test utilities for api-clients packages",
             "support": {
                 "issues": "https://github.com/WyriHaximus/php-async-test-utilities/issues",
-                "source": "https://github.com/WyriHaximus/php-async-test-utilities/tree/3.4.24"
+                "source": "https://github.com/WyriHaximus/php-async-test-utilities/tree/4.0.0"
             },
             "funding": [
                 {
@@ -8305,7 +8305,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-04-05T21:31:31+00:00"
+            "time": "2021-07-23T17:27:19+00:00"
         },
         {
             "name": "wyrihaximus/coding-standard",

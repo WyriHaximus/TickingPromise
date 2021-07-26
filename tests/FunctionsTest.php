@@ -24,7 +24,7 @@ final class FunctionsTest extends AsyncTestCase
         $inputData = 'foo.bar';
 
         $promise = futurePromise($inputData);
-        $data    = $this->await($promise, Loop::get());
+        $data    = $this->await($promise);
         self::assertSame($inputData, $data);
 
         unset($promise);
@@ -39,7 +39,7 @@ final class FunctionsTest extends AsyncTestCase
         $inputData = 'foo.bar';
 
         $promise = timedPromise(0.23, $inputData);
-        $data    = $this->await($promise, Loop::get());
+        $data    = $this->await($promise);
         self::assertSame($inputData, $data);
 
         unset($promise);
@@ -82,7 +82,7 @@ final class FunctionsTest extends AsyncTestCase
         };
 
         $promise = tickingPromise(1, $callback, $inputData);
-        $data    = $this->await($promise, Loop::get());
+        $data    = $this->await($promise);
         self::assertSame($inputData, $data);
 
         foreach ($fired as $fire) {
@@ -143,7 +143,7 @@ final class FunctionsTest extends AsyncTestCase
 
         $promise = futureFunctionPromise($inputData, $function);
 
-        $data = $this->await($promise, Loop::get());
+        $data = $this->await($promise);
         self::assertSame($outputDate, $data);
 
         unset($promise);
