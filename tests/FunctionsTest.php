@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace WyriHaximus\Tests\React;
 
-use React\EventLoop\Loop;
 use WyriHaximus\AsyncTestUtilities\AsyncTestCase;
 
 use function gc_collect_cycles;
+use function React\Async\await;
 use function str_rot13;
 use function WyriHaximus\React\futureFunctionPromise;
 use function WyriHaximus\React\futurePromise;
@@ -17,14 +17,15 @@ use function WyriHaximus\React\timedPromise;
 
 final class FunctionsTest extends AsyncTestCase
 {
-    public function testFuturePromise(): void
+    /** @test */
+    public function futurePromise(): void
     {
         gc_collect_cycles();
 
         $inputData = 'foo.bar';
 
         $promise = futurePromise($inputData);
-        $data    = $this->await($promise);
+        $data    = await($promise);
         self::assertSame($inputData, $data);
 
         unset($promise);
@@ -32,14 +33,15 @@ final class FunctionsTest extends AsyncTestCase
         self::assertSame(0, gc_collect_cycles());
     }
 
-    public function testTimedPromise(): void
+    /** @test */
+    public function timedPromise(): void
     {
         gc_collect_cycles();
 
         $inputData = 'foo.bar';
 
         $promise = timedPromise(0.23, $inputData);
-        $data    = $this->await($promise);
+        $data    = await($promise);
         self::assertSame($inputData, $data);
 
         unset($promise);
@@ -47,19 +49,26 @@ final class FunctionsTest extends AsyncTestCase
         self::assertSame(0, gc_collect_cycles());
     }
 
-    public function testTickingFuturePromise(): void
+    /** @test */
+    public function tickingFuturePromise(): void
     {
         gc_collect_cycles();
 
-        $promise = tickingFuturePromise(static fn (): bool => true);
-        Loop::run();
+        $count   = 0;
+        $promise = tickingFuturePromise(static function () use (&$count): bool {
+            return $count++ > 10;
+        });
+
+        self::assertTrue(await($promise));
+
         gc_collect_cycles();
         unset($promise);
 
         self::assertSame(0, gc_collect_cycles());
     }
 
-    public function testTickingPromise(): void
+    /** @test */
+    public function tickingPromise(): void
     {
         gc_collect_cycles();
 
@@ -82,8 +91,11 @@ final class FunctionsTest extends AsyncTestCase
         };
 
         $promise = tickingPromise(1, $callback, $inputData);
-        $data    = $this->await($promise);
+
+        $data = await($promise);
         self::assertSame($inputData, $data);
+
+        self::assertSame(0, gc_collect_cycles());
 
         foreach ($fired as $fire) {
             self::assertTrue($fire);
@@ -94,9 +106,7 @@ final class FunctionsTest extends AsyncTestCase
         self::assertSame(0, gc_collect_cycles());
     }
 
-    /**
-     * @return iterable<array<mixed>>
-     */
+    /** @return iterable<array<mixed>> */
     public function providerFutureFunctionPromise(): iterable
     {
         yield [
@@ -131,19 +141,16 @@ final class FunctionsTest extends AsyncTestCase
     }
 
     /**
-     * @param mixed $inputData
-     * @param mixed $outputDate
-     * @param mixed $function
-     *
      * @dataProvider providerFutureFunctionPromise
+     * @test
      */
-    public function testFutureFunctionPromise($inputData, $outputDate, $function): void
+    public function futureFunctionPromise(string $inputData, string $outputDate, callable $function): void
     {
         gc_collect_cycles();
 
         $promise = futureFunctionPromise($inputData, $function);
 
-        $data = $this->await($promise);
+        $data = await($promise);
         self::assertSame($outputDate, $data);
 
         unset($promise);
