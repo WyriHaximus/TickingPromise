@@ -1,6 +1,6 @@
 {
     "name": "wyrihaximus/ticking-promise",
-    "description": "Wrapping ticks into a promise",
+    "description": "\u23f2\ufe0f Wrapping ticks into a promise",
     "license": "MIT",
     "authors": [
         {
@@ -10,18 +10,12 @@
         }
     ],
     "require": {
-        "php": "^8 || ^7.4",
-        "react/event-loop": "^1.2",
-        "react/promise": "^2.8"
+        "php": "^8.2",
+        "react/event-loop": "^1.4",
+        "react/promise": "^2.10"
     },
     "require-dev": {
-        "wyrihaximus/async-test-utilities": "^3.4.24 || ^4.0.0"
-    },
-    "config": {
-        "platform": {
-            "php": "7.4.7"
-        },
-        "sort-packages": true
+        "wyrihaximus/async-test-utilities": "^7.2.0"
     },
     "autoload": {
         "psr-4": {
@@ -35,6 +29,18 @@
         "psr-4": {
             "WyriHaximus\\Tests\\React\\": "tests/"
         }
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "ergebnis/composer-normalize": true,
+            "icanhazstring/composer-unused": true,
+            "infection/extension-installer": true
+        },
+        "platform": {
+            "php": "8.2.13"
+        },
+        "sort-packages": true
     },
     "scripts": {
         "post-install-cmd": [

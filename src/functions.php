@@ -14,8 +14,10 @@ use React\Promise\PromiseInterface;
  * Promise that resolves once future tick is called.
  *
  * @param mixed $value Value to return on resolve.
+ *
+ * @phpstan-ignore-next-line
  */
-function futurePromise($value = null): PromiseInterface
+function futurePromise(mixed $value = null): PromiseInterface
 {
     $deferred = new Deferred();
     Loop::futureTick(static function () use ($deferred, $value): void {
@@ -30,8 +32,10 @@ function futurePromise($value = null): PromiseInterface
  *
  * @param float $interval The number of seconds to wait before execution.
  * @param mixed $value    Value to return on resolve.
+ *
+ * @phpstan-ignore-next-line
  */
-function timedPromise(float $interval, $value = null): PromiseInterface
+function timedPromise(float $interval, mixed $value = null): PromiseInterface
 {
     $deferred = new Deferred();
     Loop::addTimer($interval, static function () use ($deferred, $value): void {
@@ -44,14 +48,17 @@ function timedPromise(float $interval, $value = null): PromiseInterface
 /**
  * Promise that resolves once $check returns something other then false. Runs at periodic $interval.
  *
- * @param float    $interval The number of seconds between each interval to run $check.
- * @param callable $check    Callable to run at the specified $interval.
- * @param mixed    $value    Value to pass into $check on tick.
+ * @param float                          $interval The number of seconds between each interval to run $check.
+ * @param callable(mixed): (false|mixed) $check    Callable to run at the specified $interval.
+ * @param mixed                          $value    Value to pass into $check on tick.
+ *
+ * @phpstan-ignore-next-line
  */
-function tickingPromise(float $interval, callable $check, $value = null): PromiseInterface
+function tickingPromise(float $interval, callable $check, mixed $value = null): PromiseInterface
 {
     $deferred = new Deferred();
     Loop::addPeriodicTimer($interval, static function (TimerInterface $timer) use ($deferred, $check, $value): void {
+        /** @psalm-suppress MixedAssignment */
         $result = $check($value);
         if ($result === false) {
             return;
@@ -70,20 +77,24 @@ function tickingPromise(float $interval, callable $check, $value = null): Promis
  * @param callable $check      Callable to run at tick.
  * @param mixed    $value      Value to pass into $check on tick.
  * @param int      $iterations Number of iterations to call $check in one tick.
+ *
+ * @phpstan-ignore-next-line
  */
-function tickingFuturePromise(callable $check, $value = null, int $iterations = 1): PromiseInterface
+function tickingFuturePromise(callable $check, mixed $value = null, int $iterations = 1): PromiseInterface
 {
     return new Promise(static function (callable $resolve) use ($check, $iterations, $value): void {
         $runCheck = static function () use ($check, &$runCheck, $resolve, $iterations, $value): void {
             for ($i = 0; $i <= $iterations; $i++) {
                 $result = $check($value);
                 if ($result !== false) {
+                    $runCheck = null;
                     $resolve($result);
 
                     return;
                 }
             }
 
+            /** @psalm-suppress MixedArgument */
             futurePromise()->then($runCheck);
         };
 
@@ -97,7 +108,7 @@ function tickingFuturePromise(callable $check, $value = null, int $iterations = 
  * @param mixed    $value    Value to pass into $function.
  * @param callable $function Function to wrap.
  */
-function futureFunctionPromise($value, callable $function): PromiseInterface
+function futureFunctionPromise(mixed $value, callable $function): PromiseInterface
 {
     /** @psalm-suppress MissingClosureParamType */
     return futurePromise($value)->then(static fn ($value): PromiseInterface => futurePromise($function($value)));
