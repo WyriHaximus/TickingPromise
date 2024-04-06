@@ -20,7 +20,7 @@ assertType('React\Promise\PromiseInterface<bool>', tickingPromise(1, static func
 assertType('React\Promise\PromiseInterface<null>', tickingPromise(1, static function (): void {
 }));
 
-assertType('React\Promise\PromiseInterface<bool>', tickingFuturePromise(static function (): void {
+assertType('React\Promise\PromiseInterface<null>', tickingFuturePromise(static function (): void {
 }, true));
 assertType('React\Promise\PromiseInterface<null>', tickingFuturePromise(static function (): void {
 }));

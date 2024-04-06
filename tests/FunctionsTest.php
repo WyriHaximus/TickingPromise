@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace WyriHaximus\Tests\React;
 
+use React\Promise\PromiseInterface;
 use WyriHaximus\AsyncTestUtilities\AsyncTestCase;
 
 use function gc_collect_cycles;
@@ -54,7 +55,8 @@ final class FunctionsTest extends AsyncTestCase
     {
         gc_collect_cycles();
 
-        $count   = 0;
+        $count = 0;
+        /** @var PromiseInterface<bool> $promise */
         $promise = tickingFuturePromise(static function () use (&$count): bool {
             return $count++ > 10;
         });
@@ -107,7 +109,7 @@ final class FunctionsTest extends AsyncTestCase
     }
 
     /** @return iterable<array<mixed>> */
-    public function providerFutureFunctionPromise(): iterable
+    public static function providerFutureFunctionPromise(): iterable
     {
         yield [
             'foo.bar',

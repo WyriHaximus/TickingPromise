@@ -84,11 +84,11 @@ function tickingPromise(float $interval, callable $check, mixed $value = null): 
 /**
  * Promise that resolves once $check returns something other then false. Runs at future tick interval.
  *
- * @param callable $check      Callable to run at tick.
- * @param T        $value      Value to pass into $check on tick.
- * @param int      $iterations Number of iterations to call $check in one tick.
+ * @param (callable(?mixed): (T|false)) $check      Callable to run at tick.
+ * @param mixed                         $value      Value to pass into $check on tick.
+ * @param int                           $iterations Number of iterations to call $check in one tick.
  *
- * @return PromiseInterface<T>
+ * @return PromiseInterface<(T is void ? null : T)>
  *
  * @template T
  * @phpstan-ignore-next-line
