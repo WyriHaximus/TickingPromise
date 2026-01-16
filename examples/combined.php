@@ -1,23 +1,31 @@
-<?php declare(strict_types=1);
+<?php
 
-require \dirname(__DIR__) . '/vendor/autoload.php';
+declare(strict_types=1);
 
-\React\Promise\all([
-    \WyriHaximus\React\futurePromise()->then(function () {
-        return \time();
+use function React\Promise\all;
+use function WyriHaximus\React\futurePromise;
+use function WyriHaximus\React\nextPromise;
+use function WyriHaximus\React\tickingPromise;
+use function WyriHaximus\React\timedPromise;
+
+require dirname(__DIR__) . '/vendor/autoload.php';
+
+all([
+    futurePromise()->then(static function () {
+        return time();
     }),
-    \WyriHaximus\React\tickingPromise(0.001, function () {
+    tickingPromise(0.001, static function () {
         echo '.';
 
-        return \mt_rand(0, 1000) == 13;
+        return mt_rand(0, 1000) === 13;
     }),
-])->then(function ($time) {
-    return \WyriHaximus\React\nextPromise($time[0]);
-})->then(function ($time) {
-    return \WyriHaximus\React\timedPromise(3, $time);
-})->then(function ($time): void {
-    echo \PHP_EOL;
-    echo DateTime::createFromFormat('U', $time)->format('r'), \PHP_EOL;
-    echo DateTime::createFromFormat('U', \time())->format('r'), \PHP_EOL;
-    echo 'Done', \PHP_EOL;
+])->then(static function ($time) {
+    return nextPromise($time[0]);
+})->then(static function ($time) {
+    return timedPromise(3, $time);
+})->then(static function ($time): void {
+    echo PHP_EOL;
+    echo DateTime::createFromFormat('U', $time)->format('r'), PHP_EOL;
+    echo DateTime::createFromFormat('U', time())->format('r'), PHP_EOL;
+    echo 'Done', PHP_EOL;
 });

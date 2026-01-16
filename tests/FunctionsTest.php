@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace WyriHaximus\Tests\React;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use React\Promise\PromiseInterface;
 use WyriHaximus\AsyncTestUtilities\AsyncTestCase;
 
@@ -18,7 +20,7 @@ use function WyriHaximus\React\timedPromise;
 
 final class FunctionsTest extends AsyncTestCase
 {
-    /** @test */
+    #[Test]
     public function futurePromise(): void
     {
         gc_collect_cycles();
@@ -34,7 +36,7 @@ final class FunctionsTest extends AsyncTestCase
         self::assertSame(0, gc_collect_cycles());
     }
 
-    /** @test */
+    #[Test]
     public function timedPromise(): void
     {
         gc_collect_cycles();
@@ -50,7 +52,7 @@ final class FunctionsTest extends AsyncTestCase
         self::assertSame(0, gc_collect_cycles());
     }
 
-    /** @test */
+    #[Test]
     public function tickingFuturePromise(): void
     {
         gc_collect_cycles();
@@ -69,7 +71,7 @@ final class FunctionsTest extends AsyncTestCase
         self::assertSame(0, gc_collect_cycles());
     }
 
-    /** @test */
+    #[Test]
     public function tickingPromise(): void
     {
         gc_collect_cycles();
@@ -81,7 +83,7 @@ final class FunctionsTest extends AsyncTestCase
             false,
         ];
         $i         = -1;
-        $callback  = static function ($data) use (&$i, &$fired, $inputData) {
+        $callback  = static function (mixed $data) use (&$i, &$fired, $inputData): false|string {
             self::assertSame($inputData, $data);
             $i++;
             $fired[$i] = true;
@@ -142,10 +144,8 @@ final class FunctionsTest extends AsyncTestCase
         ];
     }
 
-    /**
-     * @dataProvider providerFutureFunctionPromise
-     * @test
-     */
+    #[Test]
+    #[DataProvider('providerFutureFunctionPromise')]
     public function futureFunctionPromise(string $inputData, string $outputDate, callable $function): void
     {
         gc_collect_cycles();

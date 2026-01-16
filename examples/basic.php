@@ -1,7 +1,11 @@
-<?php declare(strict_types=1);
+<?php
 
-require \dirname(__DIR__) . '/vendor/autoload.php';
+declare(strict_types=1);
 
-\WyriHaximus\React\futurePromise()->then(function (): void {
-    echo DateTime::createFromFormat('U', \time())->format('r'), \PHP_EOL;
+use function WyriHaximus\React\futurePromise;
+
+require dirname(__DIR__) . '/vendor/autoload.php';
+
+futurePromise()->then(static function (): void {
+    echo DateTime::createFromFormat('U', time())->format('r'), PHP_EOL;
 });
