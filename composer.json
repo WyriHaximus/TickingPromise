@@ -1,55 +1,57 @@
 {
-    "name": "wyrihaximus/ticking-promise",
-    "description": "\u23f2\ufe0f Wrapping ticks into a promise",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Cees-Jan Kiewiet",
-            "email": "ceesjank@gmail.com",
-            "homepage": "http://wyrihaximus.net/"
-        }
-    ],
-    "require": {
-        "php": "^8.2",
-        "react/event-loop": "^1.5",
-        "react/promise": "^3.1"
-    },
-    "require-dev": {
-        "wyrihaximus/async-test-utilities": "^8.0.0"
-    },
-    "autoload": {
-        "psr-4": {
-            "WyriHaximus\\React\\": "src/"
-        },
-        "files": [
-            "src/functions_include.php"
-        ]
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "WyriHaximus\\Tests\\React\\": "tests/"
-        }
-    },
-    "config": {
-        "allow-plugins": {
-            "dealerdirect/phpcodesniffer-composer-installer": true,
-            "ergebnis/composer-normalize": true,
-            "icanhazstring/composer-unused": true,
-            "infection/extension-installer": true
-        },
-        "platform": {
-            "php": "8.2.13"
-        },
-        "sort-packages": true
-    },
-    "scripts": {
-        "post-install-cmd": [
-            "composer normalize",
-            "composer update --lock --no-scripts"
-        ],
-        "post-update-cmd": [
-            "composer normalize",
-            "composer update --lock --no-scripts"
-        ]
+  "name": "wyrihaximus/ticking-promise",
+  "description": "\u23f2\ufe0f Wrapping ticks into a promise",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Cees-Jan Kiewiet",
+      "email": "ceesjank@gmail.com",
+      "homepage": "http://wyrihaximus.net/"
     }
+  ],
+  "require": {
+    "php": "^8.4",
+    "react/event-loop": "^1.6.0",
+    "react/promise": "^3.3.0"
+  },
+  "require-dev": {
+    "wyrihaximus/async-test-utilities": "^12.1.0",
+    "wyrihaximus/makefiles": "^0.10.3"
+  },
+  "autoload": {
+    "psr-4": {
+      "WyriHaximus\\React\\": "src/"
+    },
+    "files": [
+      "src/functions_include.php"
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "WyriHaximus\\Tests\\React\\": "tests/"
+    }
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true,
+      "ergebnis/composer-normalize": true,
+      "icanhazstring/composer-unused": true,
+      "infection/extension-installer": true,
+      "phpstan/extension-installer": true,
+      "wyrihaximus/makefiles": true,
+      "wyrihaximus/test-utilities": true
+    },
+    "platform": {
+      "php": "8.4.13"
+    },
+    "sort-packages": true
+  },
+  "scripts": {
+    "post-install-cmd": [
+      "make on-install-or-update || true"
+    ],
+    "post-update-cmd": [
+      "make on-install-or-update || true"
+    ]
+  }
 }

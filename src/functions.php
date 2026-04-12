@@ -16,7 +16,8 @@ use React\Promise\PromiseInterface;
  *
  * @template T
  * Promise that resolves once future tick is called.
- * @phpstan-ignore-next-line
+ *
+ * @phpstan-ignore ergebnis.noParameterWithNullDefaultValue
  */
 function futurePromise(mixed $value = null): PromiseInterface
 {
@@ -38,7 +39,8 @@ function futurePromise(mixed $value = null): PromiseInterface
  * @return PromiseInterface<T>
  *
  * @template T
- * @phpstan-ignore-next-line
+ *
+ * @phpstan-ignore ergebnis.noParameterWithNullDefaultValue
  */
 function timedPromise(float $interval, mixed $value = null): PromiseInterface
 {
@@ -61,14 +63,14 @@ function timedPromise(float $interval, mixed $value = null): PromiseInterface
  * @return PromiseInterface<T>
  *
  * @template T
- * @phpstan-ignore-next-line
+ *
+ * @phpstan-ignore ergebnis.noParameterWithNullDefaultValue
  */
 function tickingPromise(float $interval, callable $check, mixed $value = null): PromiseInterface
 {
     /** @var Deferred<T> $deferred */
     $deferred = new Deferred();
     Loop::addPeriodicTimer($interval, static function (TimerInterface $timer) use ($deferred, $check, $value): void {
-        /** @psalm-suppress MixedAssignment */
         $result = $check($value);
         if ($result === false) {
             return;
@@ -91,7 +93,8 @@ function tickingPromise(float $interval, callable $check, mixed $value = null): 
  * @return PromiseInterface<(T is void ? null : T)>
  *
  * @template T
- * @phpstan-ignore-next-line
+ *
+ * @phpstan-ignore ergebnis.noParameterWithNullDefaultValue
  */
 function tickingFuturePromise(callable $check, mixed $value = null, int $iterations = 1): PromiseInterface
 {
@@ -108,7 +111,6 @@ function tickingFuturePromise(callable $check, mixed $value = null, int $iterati
             }
         }
 
-        /** @psalm-suppress MixedArgument */
         futurePromise()->then($runCheck);
     };
 
@@ -120,8 +122,8 @@ function tickingFuturePromise(callable $check, mixed $value = null, int $iterati
 /**
  * Sandwich a $function call within two futureTicks.
  *
- * @param T        $value    Value to pass into $function.
- * @param callable $function Function to wrap.
+ * @param T                $value    Value to pass into $function.
+ * @param (callable(T): T) $function Function to wrap.
  *
  * @return PromiseInterface<T>
  *
@@ -129,6 +131,12 @@ function tickingFuturePromise(callable $check, mixed $value = null, int $iterati
  */
 function futureFunctionPromise(mixed $value, callable $function): PromiseInterface
 {
-    /** @psalm-suppress MissingClosureParamType */
-    return futurePromise($value)->then(static fn ($value): PromiseInterface => futurePromise($function($value)));
+    /**
+     * @param T $value
+     *
+     * @return PromiseInterface<T>
+     */
+    $handler = static fn (mixed $value): PromiseInterface => futurePromise($function($value));
+
+    return futurePromise($value)->then($handler);
 }

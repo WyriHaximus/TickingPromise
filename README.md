@@ -7,14 +7,14 @@
 [![Type Coverage](https://shepherd.dev/github/WyriHaximus/TickingPromise/coverage.svg)](https://shepherd.dev/github/WyriHaximus/TickingPromise)
 [![License](https://poser.pugx.org/wyrihaximus/ticking-promise/license.png)](https://packagist.org/packages/wyrihaximus/ticking-promise)
 
-Wrapping event loop ticks into a promise. 
+Wrapping event loop ticks into a promise.
 
 ## Install ##
 
 To install via [Composer](http://getcomposer.org/), use the command below, it will automatically detect the latest version and bind it with `~`.
 
 ```
-composer require wyrihaximus/ticking-promise 
+composer require wyrihaximus/ticking-promise
 ```
 
 ## Example ##
@@ -38,7 +38,7 @@ For more examples check the [examples directory](https://github.com/WyriHaximus/
 
 ## License ##
 
-Copyright 2021 [Cees-Jan Kiewiet](http://wyrihaximus.net/)
+Copyright 2026 [Cees-Jan Kiewiet](http://wyrihaximus.net/)
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation

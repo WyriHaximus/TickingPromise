@@ -25,5 +25,8 @@ assertType('React\Promise\PromiseInterface<null>', tickingFuturePromise(static f
 assertType('React\Promise\PromiseInterface<null>', tickingFuturePromise(static function (): void {
 }));
 
-assertType('React\Promise\PromiseInterface<bool>', futureFunctionPromise(true, static function (): void {
+/**
+ * Ultimatally this should be `PromiseInterface<void>` but that's not possible yet.
+ */
+assertType('React\Promise\PromiseInterface<void|true>', futureFunctionPromise(true, static function (): void {
 }));

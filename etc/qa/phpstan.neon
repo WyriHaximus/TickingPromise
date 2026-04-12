@@ -1,2 +1,6 @@
-includes:
-	- ../../vendor/wyrihaximus/async-test-utilities/rules.neon
+parameters:
+	level: max
+	paths:
+		- ../../etc
+		- ../../src
+		- ../../tests
