@@ -11,7 +11,7 @@ const WAIT_COUNT = 307200;
 $start = time();
 $count = 0;
 echo 'Wait ' . WAIT_COUNT . ' ticks before resolving:', PHP_EOL;
-tickingFuturePromise(static function ($waitCount) use (&$count, $start) {
+tickingFuturePromise(static function ($waitCount) use (&$count, $start): int|false {
     echo '.';
 
     if (++$count === $waitCount) {
