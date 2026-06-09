@@ -12,7 +12,7 @@ const WAIT_INTERVAL = 0.01;
 $start = time();
 $count = 0;
 echo 'Wait ' . WAIT_COUNT . ' * ' . WAIT_INTERVAL . ' seconds before resolving:', PHP_EOL;
-tickingPromise(WAIT_INTERVAL, static function ($waitCount) use (&$count, $start) {
+tickingPromise(WAIT_INTERVAL, static function ($waitCount) use (&$count, $start): int|false {
     echo '.';
 
     if (++$count === $waitCount) {
