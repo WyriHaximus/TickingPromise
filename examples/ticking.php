@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use function WyriHaximus\React\tickingPromise;
 
-require dirname(__DIR__) . '/vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 const WAIT_COUNT    = 1337;
 const WAIT_INTERVAL = 0.01;
