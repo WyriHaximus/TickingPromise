@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use function WyriHaximus\React\tickingFuturePromise;
 
-require dirname(__DIR__) . '/vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 const WAIT_COUNT = 307200;
 
