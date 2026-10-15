@@ -131,11 +131,7 @@ function tickingFuturePromise(callable $check, mixed $value = null, int $iterati
  */
 function futureFunctionPromise(mixed $value, callable $function): PromiseInterface
 {
-    /**
-     * @param T $value
-     *
-     * @return PromiseInterface<T>
-     */
+    /** @phpstan-ignore argument.type */
     $handler = static fn (mixed $value): PromiseInterface => futurePromise($function($value));
 
     return futurePromise($value)->then($handler);
