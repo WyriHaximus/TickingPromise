@@ -10,7 +10,7 @@ use function WyriHaximus\React\nextPromise;
 use function WyriHaximus\React\tickingPromise;
 use function WyriHaximus\React\timedPromise;
 
-require dirname(__DIR__) . '/vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 all([
     futurePromise()->then(static fn (): int => time()),

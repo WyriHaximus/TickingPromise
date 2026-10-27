@@ -3,13 +3,11 @@
 ![Continuous Integration](https://github.com/wyrihaximus/TickingPromise/workflows/Continuous%20Integration/badge.svg)
 [![Latest Stable Version](https://poser.pugx.org/wyrihaximus/ticking-promise/v/stable.png)](https://packagist.org/packages/wyrihaximus/ticking-promise)
 [![Total Downloads](https://poser.pugx.org/wyrihaximus/ticking-promise/downloads.png)](https://packagist.org/packages/wyrihaximus/ticking-promise/stats)
-[![Code Coverage](https://coveralls.io/repos/github/WyriHaximus/TickingPromise/badge.svg?branchmaster)](https://coveralls.io/github/WyriHaximus/TickingPromise?branch=master)
-[![Type Coverage](https://shepherd.dev/github/WyriHaximus/TickingPromise/coverage.svg)](https://shepherd.dev/github/WyriHaximus/TickingPromise)
 [![License](https://poser.pugx.org/wyrihaximus/ticking-promise/license.png)](https://packagist.org/packages/wyrihaximus/ticking-promise)
 
 Wrapping event loop ticks into a promise.
 
-## Install ##
+## Install
 
 To install via [Composer](http://getcomposer.org/), use the command below, it will automatically detect the latest version and bind it with `~`.
 
@@ -17,7 +15,7 @@ To install via [Composer](http://getcomposer.org/), use the command below, it wi
 composer require wyrihaximus/ticking-promise
 ```
 
-## Example ##
+## Example
 
 ```php
 <?php
@@ -36,9 +34,9 @@ futurePromise()->then(static function (string $message): void {
 
 For more examples check the [examples directory](https://github.com/WyriHaximus/TickingPromise/tree/master/examples).
 
-## License ##
+## License
 
-Copyright 2026 [Cees-Jan Kiewiet](http://wyrihaximus.net/)
+Copyright 2026 [Cees-Jan Kiewiet](https://wyrihaximus.net/)
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation
